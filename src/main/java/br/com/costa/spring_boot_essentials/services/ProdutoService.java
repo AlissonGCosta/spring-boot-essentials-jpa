@@ -2,6 +2,7 @@ package br.com.costa.spring_boot_essentials.services;
 
 import br.com.costa.spring_boot_essentials.database.model.ProdutoModel;
 import br.com.costa.spring_boot_essentials.dtos.ProdutoDto;
+import br.com.costa.spring_boot_essentials.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -59,11 +60,11 @@ public class ProdutoService {
         return novoProduto;
     }
 
-    public ProdutoModel updateProduto(ProdutoDto produtoDto, Integer id) {
+    public ProdutoModel updateProduto(ProdutoDto produtoDto, Integer id) throws NotFoundException {
        ProdutoModel produto = PRODUTOS.stream()
                 .filter(p-> p.getId() == (id))
                 .findAny()
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+                .orElseThrow(() -> new NotFoundException("Produto não encontrado"));
 
        produto.setNome(produtoDto.getNome());
        produto.setPreco(produtoDto.getPreco());
