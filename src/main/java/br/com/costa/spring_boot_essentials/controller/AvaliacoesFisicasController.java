@@ -6,6 +6,7 @@ import br.com.costa.spring_boot_essentials.exception.BadRequestException;
 import br.com.costa.spring_boot_essentials.services.AvaliacaoFisicaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -30,5 +31,11 @@ public class AvaliacoesFisicasController {
     @ResponseStatus(HttpStatus.OK)
     public List<AvaliacoesFisicaProjection> getAllAvaliacoes(){
         return avaliacaoFisicaService.getAllAvaliacoes();
+    }
+
+    @GetMapping("/page/{page}/size/{size}")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<AvaliacoesFisicaProjection> getAllAvaliacoesPage(@PathVariable int page, @PathVariable int size){
+        return avaliacaoFisicaService.getAllAvaliacoesPage(page, size);
     }
 }

@@ -32,4 +32,9 @@ public class AlunosController {
         return alunoService.getAlunoAvaliacao(alunoId);
     }
 
+    @DeleteMapping("/{alunoId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAluno(@PathVariable Integer alunoId) throws NotFoundException {
+        alunoService.deletarAluno(alunoId);
+    }
 }

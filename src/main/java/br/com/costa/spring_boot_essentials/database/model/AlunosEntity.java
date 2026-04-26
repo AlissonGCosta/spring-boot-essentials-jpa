@@ -28,7 +28,7 @@ public class AlunosEntity {
     private String email;
 
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "avaliacoes_fisicas_id")
     private AvaliacoesFisicasEntity avaliacoesFisicas;
 

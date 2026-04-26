@@ -2,18 +2,26 @@ package br.com.costa.spring_boot_essentials.services;
 
 import br.com.costa.spring_boot_essentials.database.model.AlunosEntity;
 import br.com.costa.spring_boot_essentials.database.model.AvaliacoesFisicasEntity;
+import br.com.costa.spring_boot_essentials.database.model.TreinosEntity;
 import br.com.costa.spring_boot_essentials.database.model.repository.IAlunosRepository;
+import br.com.costa.spring_boot_essentials.database.model.repository.IAvaliacoesFisicasRepository;
+import br.com.costa.spring_boot_essentials.database.model.repository.ITreinosRepository;
 import br.com.costa.spring_boot_essentials.dtos.AlunoDto;
 import br.com.costa.spring_boot_essentials.exception.BadRequestException;
 import br.com.costa.spring_boot_essentials.exception.NotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class AlunoService {
 
+    private IAvaliacoesFisicasRepository avaliacoesFisicasRepository;
+    private final ITreinosRepository treinosRepository;
     private final IAlunosRepository alunosRepository;
 
     public void criarAluno(@Valid AlunoDto alunoDto) throws BadRequestException {
@@ -41,6 +49,23 @@ public class AlunoService {
             }
 
      return avaliacaoFisica;
+    }
+
+    @Transactional
+    public void deletarAluno(Integer alunoId) throws NotFoundException {
+        AlunosEntity aluno = alunosRepository.findByIdFetch(alunoId)
+                .orElseThrow(() -> new NotFoundException("Aluno não encontrado"));
+
+
+      List<Integer> treinoAlunoIds =   aluno.getTreinos().stream()
+                .map(TreinosEntity::getId)
+                .toList();
+
+      treinosRepository.deleteAllById(treinoAlunoIds);
+
+      alunosRepository.deleteById(alunoId);
+
+      avaliacoesFisicasRepository.deleteById(aluno.getAvaliacoesFisicas().getId());
     }
 
 }
